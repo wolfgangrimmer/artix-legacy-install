@@ -45,13 +45,13 @@ setRootPswd(){
 }
 
 addNewUser(){
-    read -p "User : " user
+    read -p "User : " user  
     useradd -m $user
     passwd $user
     usermod –aG wheel $user
 }
 
-pacman -Syyu archlinux-keyring && sudo pacman -Syu
+sudo pacman -Syyu archlinux-keyring && sudo pacman -Syyu
 lsblk
 read -p "Drive letter : " driveLetter
 postinstallation $driveLetter
