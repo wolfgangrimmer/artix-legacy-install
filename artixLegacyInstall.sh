@@ -80,7 +80,7 @@ read -p "Which drive to format : " driveLetter
 partition $driveLetter
 makefilesystems $driveLetter
 mountpartitions $driveLetter
-curl -L https://raw.githubusercontent.com/wolfgangrimmer/arch-install/master/postinstall.sh > /mnt/postinstall.sh
-curl -L https://raw.githubusercontent.com/wolfgangrimmer/arch-install/master/larbs.sh > /mnt/larbs.sh
+curl -L https://raw.githubusercontent.com/wolfgangrimmer/artix-legacy-install/master/postinstall.sh > /mnt/postinstall.sh
+curl -L https://raw.githubusercontent.com/wolfgangrimmer/artix-legacy-install/master/larbs.sh > /mnt/larbs.sh
 generatefstab
 installarch
