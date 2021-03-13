@@ -71,7 +71,7 @@ generatefstab(){
 installarch(){
     basestrap /mnt base base-devel linux linux-firmware runit elogind-runit sudo vim networkmanager networkmanager-runit linux-headers
     echo "Now run postinstall.sh by typing : sh postinstall.sh"
-    artools-chroot /mnt    # Switches to newly created arch as root
+    artix-chroot /mnt    # Switches to newly created arch as root
 }
 
 pacman -S archlinux-keyring && sudo pacman -Syu

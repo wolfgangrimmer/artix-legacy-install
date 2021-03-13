@@ -1,7 +1,7 @@
 #!/bin/sh
 
 postinstallation(){
-    ln -s /etc/runit/sv/NetworkManager/ /run/runit/service    # NetworkManager enabled at startup, alternative route (only during system install) is /etc/runit/runsvdir/current
+    ln -s /etc/runit/sv/NetworkManager/ /etc/runit/runsvdir/current   # NetworkManager enabled at startup, alternative route (only during system install) is /etc/runit/runsvdir/current
     read -p "Hostname : " hostname
     installgrub $1
     generatelocale
@@ -9,6 +9,7 @@ postinstallation(){
     sethostname $hostname
     sethosts $hostname
     setRootPswd
+    addNewUser
 }
 
 installgrub(){
@@ -32,9 +33,10 @@ sethostname(){
 }
 
 sethosts(){
-    "127.0.0.1  localhost" >> /etc/hosts
-    "::1  localhost" >> /etc/hosts
-    "127.0.0.1  $1.localdomain $1" >> /etc/hosts
+    echo -e "\n" >> /etc/hosts
+    echo "127.0.0.1  localhost" >> /etc/hosts
+    echo "::1  localhost" >> /etc/hosts
+    echo "127.0.0.1  $1.localdomain $1" >> /etc/hosts
 }
 
 setRootPswd(){
@@ -46,8 +48,10 @@ addNewUser(){
     read -p "User : " user
     useradd -m $user
     passwd $user
+    usermod –aG wheel $user
 }
 
+pacman -Syyu archlinux-keyring && sudo pacman -Syu
 lsblk
 read -p "Drive letter : " driveLetter
 postinstallation $driveLetter
