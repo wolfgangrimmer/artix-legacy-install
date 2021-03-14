@@ -4,6 +4,12 @@ wait(){
     read -p "Press enter to continue"
 }
 
+important(){
+    echo "---------------------------------------------------------"
+    echo "-----------------------!IMPORTANT!-----------------------"
+    echo "---------------------------------------------------------"
+}
+
 partition(){
     (
     echo g # Create a new empty DOS partition table
@@ -56,8 +62,8 @@ partition(){
 }
 
 makefilesystems(){
-    sudo mkfs.fat -F 32 /dev/sda$11
-    fatlabel /dev/sda$11 BOOT
+    sudo mkfs.fat -F 32 /dev/sd$11
+    fatlabel /dev/sd$11 BOOT
     wait
     sudo mkfs.ext4 /dev/sd$13
     wait
@@ -81,23 +87,25 @@ mountpartitions(){
     wait
 }
 
+installarch(){
+    sudo basestrap /mnt base base-devel runit elogind-runit linux linux-firmware  linux-headers sudo vim networkmanager networkmanager-runit
+    wait
+    artix-chroot /mnt    # Switches to newly created arch as root
+}
+
 generatefstab(){
     sudo fstabgen -U /                      # Displays fstab to user
     sudo fstabgen -U / >> /mnt/etc/fstab    # -U is for UUIDS
     echo "cat /mnt/etc/fstab"
     cat /mnt/etc/fstab
-    echo "-----------------------!IMPORTANT!-----------------------"
+    important
     wait
 }
 
-installarch(){
-    sudo basestrap /mnt base base-devel runit elogind-runit linux linux-firmware  linux-headers sudo vim networkmanager networkmanager-runit
-    wait
+finalize(){
     echo "Now run postinstall.sh by typing : sh postinstall.sh"
     artix-chroot /mnt    # Switches to newly created arch as root
 }
-
-
 
 #sudo pacman -Syyu archlinux-keyring && sudo pacman -Syyu --overwrite "*"
 lsblk
@@ -107,5 +115,6 @@ makefilesystems $driveLetter
 mountpartitions $driveLetter
 sudo curl -L https://raw.githubusercontent.com/wolfgangrimmer/artix-legacy-install/master/postUefiInstall.sh > /mnt/postinstall.sh
 sudo curl -L https://raw.githubusercontent.com/wolfgangrimmer/artix-legacy-install/master/larbs.sh > /mnt/larbs.sh
-generatefstab
 installarch
+generatefstab
+finalize
