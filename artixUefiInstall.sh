@@ -6,7 +6,7 @@ wait(){
 
 partition(){
     (
-    echo o # Create a new empty DOS partition table
+    echo g # Create a new empty DOS partition table
 
     ##wipe drive
     echo d      # Delete partition
@@ -56,7 +56,8 @@ partition(){
 }
 
 makefilesystems(){
-    sudo mkfs.ext4 /dev/sd$11
+    sudo mkfs.fat -F 32 /dev/sda$11
+    fatlabel /dev/sda$11 BOOT
     wait
     sudo mkfs.ext4 /dev/sd$13
     wait
@@ -104,7 +105,7 @@ read -p "Which drive to format : " driveLetter
 partition $driveLetter
 makefilesystems $driveLetter
 mountpartitions $driveLetter
-sudo curl -L https://raw.githubusercontent.com/wolfgangrimmer/artix-legacy-install/master/postLegacyInstall.sh > /mnt/postinstall.sh
+sudo curl -L https://raw.githubusercontent.com/wolfgangrimmer/artix-legacy-install/master/postUefiInstall.sh > /mnt/postinstall.sh
 sudo curl -L https://raw.githubusercontent.com/wolfgangrimmer/artix-legacy-install/master/larbs.sh > /mnt/larbs.sh
 generatefstab
 installarch
