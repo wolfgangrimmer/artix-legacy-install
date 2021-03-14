@@ -57,10 +57,14 @@ partition(){
 
 makefilesystems(){
     sudo mkfs.ext4 /dev/sd$11
+    wait
     sudo mkfs.ext4 /dev/sd$13
+    wait
     sudo mkfs.ext4 /dev/sd$14
+    wait
     sudo mkswap /dev/sd$12
     sudo swapon /dev/sd$12
+    wait
 }
 
 mountpartitions(){
@@ -69,15 +73,23 @@ mountpartitions(){
     sudo mount /dev/sd$13 /mnt/
     sudo mount /dev/sd$11 /mnt/boot
     sudo mount /dev/sd$14 /mnt/home
+    ls /mnt
+    wait
+    lsblk
+    wait
 }
 
 generatefstab(){
     sudo fstabgen -U /               # Displays fstab to user
     sudo fstabgen -U / >> /etc/fstab # -U is for UUIDS
+    echo "cat /etc/fstab"
+    cat /etc/fstab
+    wait
 }
 
 installarch(){
     sudo basestrap /mnt base base-devel linux linux-firmware runit elogind-runit sudo vim networkmanager networkmanager-runit linux-headers
+    wait
     echo "Now run postinstall.sh by typing : sh postinstall.sh"
     artix-chroot /mnt    # Switches to newly created arch as root
 }
@@ -88,15 +100,9 @@ installarch(){
 lsblk
 read -p "Which drive to format : " driveLetter
 partition $driveLetter
-wait
 makefilesystems $driveLetter
-wait
 mountpartitions $driveLetter
-wait
 sudo curl -L https://raw.githubusercontent.com/wolfgangrimmer/artix-legacy-install/master/postinstall.sh > /mnt/postinstall.sh
 sudo curl -L https://raw.githubusercontent.com/wolfgangrimmer/artix-legacy-install/master/larbs.sh > /mnt/larbs.sh
-wait
 generatefstab
-wait
 installarch
-wait
