@@ -1,5 +1,9 @@
 #!/bin/sh
 
+wait(){
+    read -p "Press enter to continue"
+}
+
 partition(){
     (
     echo o # Create a new empty DOS partition table
@@ -78,13 +82,21 @@ installarch(){
     artix-chroot /mnt    # Switches to newly created arch as root
 }
 
-sudo pacman -Syyu archlinux-keyring && sudo pacman -Syyu --overwrite "*"
+
+
+#sudo pacman -Syyu archlinux-keyring && sudo pacman -Syyu --overwrite "*"
 lsblk
 read -p "Which drive to format : " driveLetter
 partition $driveLetter
+wait
 makefilesystems $driveLetter
+wait
 mountpartitions $driveLetter
+wait
 sudo curl -L https://raw.githubusercontent.com/wolfgangrimmer/artix-legacy-install/master/postinstall.sh > /mnt/postinstall.sh
 sudo curl -L https://raw.githubusercontent.com/wolfgangrimmer/artix-legacy-install/master/larbs.sh > /mnt/larbs.sh
+wait
 generatefstab
+wait
 installarch
+wait

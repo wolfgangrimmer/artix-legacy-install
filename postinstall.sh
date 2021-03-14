@@ -1,15 +1,7 @@
 #!/bin/sh
 
-postinstallation(){
-    ln -s /etc/runit/sv/NetworkManager/ /etc/runit/runsvdir/current   # NetworkManager enabled at startup, alternative route (only during system install) is /etc/runit/runsvdir/current
-    read -p "Hostname : " hostname
-    installgrub $1
-    generatelocale
-    settimezone
-    sethostname $hostname
-    sethosts $hostname
-    setRootPswd
-    addNewUser
+wait(){
+    read -p "Press enter to continue"
 }
 
 installgrub(){
@@ -30,6 +22,7 @@ settimezone(){
 
 sethostname(){
     echo $hostname > /etc/hostname
+    cat /etc/hostname
 }
 
 sethosts(){
@@ -37,6 +30,7 @@ sethosts(){
     echo "127.0.0.1  localhost" >> /etc/hosts
     echo "::1  localhost" >> /etc/hosts
     echo "127.0.0.1  $1.localdomain $1" >> /etc/hosts
+    cat /etc/hosts
 }
 
 setRootPswd(){
@@ -49,6 +43,26 @@ addNewUser(){
     useradd -m $user
     passwd $user
     usermod –aG wheel $user
+}
+
+postinstallation(){
+    ln -s /etc/runit/sv/NetworkManager/ /etc/runit/runsvdir/current   # NetworkManager enabled at startup, alternative route (only during system install) is /etc/runit/runsvdir/current
+    wait
+    read -p "Hostname : " hostname
+    installgrub $1
+    wait
+    generatelocale
+    wait
+    settimezone
+    wait
+    sethostname $hostname
+    wait
+    sethosts $hostname
+    wait
+    setRootPswd
+    wait
+    addNewUser
+    wait
 }
 
 sudo pacman -Syyu archlinux-keyring && sudo pacman -Syyu
